@@ -1,0 +1,18 @@
+<html>
+    <head> 
+        <title>Remind Me</title>    
+    </head>
+
+    <body>
+        <p> {{msg}} </p>
+        <form method = 'POST' action = '.'>
+            {% csrf_token %}
+            message : <textarea  id = "messageDetail" name = "messageDetail"></textarea>
+            To Whom You sent the mail : <input type = "email" id = "recipientMail" name = "recipientMail">
+            When : <input type="datetime-local" id="triggerDateTime" name = "triggerDateTime">
+
+            <input type="submit" value="Submit">
+        </form>
+
+    </body>
+</html>

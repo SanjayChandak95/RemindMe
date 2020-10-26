@@ -13,3 +13,6 @@ class EventReminder(models.Model):
     messageDetail   =     models.CharField(max_length = 100,blank=False)
     triggerDateTime =     models.DateTimeField(blank=False)
     EventProgress   =     models.CharField(max_length = 1,blank=False) # P in progress, U untouched , F finish , E error
+
+    class Meta:
+        ordering = ["-triggerDateTime"]

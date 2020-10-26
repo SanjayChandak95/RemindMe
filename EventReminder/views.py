@@ -7,14 +7,23 @@ from .forms import CreateEvent
 from RemindMe.settings import EMAIL_HOST_USER
 from heapq import heappush,heappop
 
-TODAY = datetime.date.today()
+from django.core.paginator import Paginator
 
+TODAY = datetime.date.today()
+PAGESIZE = 5
+mailFooter = "\nThis reminder is designed by Remind Me app. You can find us on www.RemindMe.com\n"
 # Create your views here.
 def createEventReminder(request):
     userId = User.objects.get(userName = 'Sanjay')
     context = {'msg' : ""}
+    
     items = EventReminder.objects.filter(userId = userId, EventProgress = 'F').all()
-    context['items'] = items
+    paginator = Paginator(items,PAGESIZE)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # context['items'] = items
+    context['page_obj'] = page_obj
     if request.method == 'POST':
         createEvent = request.POST
         messageDetail = createEvent['messageDetail']
@@ -44,7 +53,10 @@ def sendReminder():
     for task in TODAYS_TASK:
         if task.triggerDateTime.time() <= currentTime:
             subject = "Reminder for your next event"
-            send_mail(subject , task.messageDetail,task.userId.email, [task.recipientMail],fail_silently = False )
+            send_mail(subject ,
+                        task.messageDetail + "\n\n--By "+task.userId.email +mailFooter,
+                        task.userId.email,
+                        [task.recipientMail],fail_silently = False )
             task.EventProgress = 'F'
             task.save()
     f.write("\nReminder Job end :"+str(currentTime))

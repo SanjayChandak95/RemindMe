@@ -19,6 +19,7 @@
   <style>
   td  {
       font-size : 12px;
+      width : 50px;
   }
   </style>
     <div class = "container">
@@ -42,9 +43,10 @@
         </form>
     </div>
     <br/>
+    <hr>
     
     <div class="container">
-        <h6>History <small>Refresh if not updated</small></h6>
+        <h6>History <small>(Refresh if not updated)</small></h6>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -54,7 +56,8 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in items %}
+                {% comment %} {% for item in items %} {% endcomment %}
+                {% for item in page_obj %}
                     <tr>
                         <td>{{item.messageDetail}}</td>
                         <td>{{item.recipientMail}}</td>
@@ -63,28 +66,26 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
     </div>
 
   </body>
 </html>
-
-{% comment %} 
-
-<html>
-    <head> 
-        <title>Remind Me</title>    
-    </head>
-
-    <body>
-        <p> {{msg}} </p>
-        <form method = 'POST' action = '.'>
-            {% csrf_token %}
-            message : <textarea  id = "messageDetail" name = "messageDetail"></textarea>
-            To Whom You sent the mail : <input type = "email" id = "recipientMail" name = "recipientMail">
-            When : <input type="datetime-local" id="triggerDateTime" name = "triggerDateTime">
-
-            <input type="submit" value="Submit">
-        </form>
-
-    </body>
-</html> {% endcomment %}

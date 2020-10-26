@@ -11,11 +11,13 @@ TODAY = datetime.date.today()
 
 # Create your views here.
 def createEventReminder(request):
+    userId = User.objects.get(userName = 'Sanjay')
     context = {'msg' : ""}
+    items = EventReminder.objects.filter(userId = userId, EventProgress = 'F').all()
+    context['items'] = items
     if request.method == 'POST':
         createEvent = request.POST
         messageDetail = createEvent['messageDetail']
-        userId = User.objects.get(userName = 'Sanjay')
         tt = setTime(createEvent['triggerDateTime'])
         processFlag = 'U'
         if tt.date() == TODAY:
